@@ -1,4 +1,5 @@
 function newLogin(){
+  console.log("hola");
   var email= document.getElementById("login-email").value;
   var pass= SHA1(document.getElementById("login-password").value);
   var respuesta;
