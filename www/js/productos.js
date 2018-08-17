@@ -233,9 +233,6 @@ function cambiarColor() {
   }
 }
 
-
-
-
 function guardarProductoDeseado() {
   idProducto = this.children[0].id;
   var miObjeto = new Object();

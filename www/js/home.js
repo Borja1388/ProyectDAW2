@@ -368,9 +368,9 @@ function home() {
       miObjeto.provincia = "Sin introducir";
       miObjeto.fechaNacimiento = "Introduce tu fecha de nacimiento";
       var myString = JSON.stringify(miObjeto);
-      console.log($("#password").val());
+      
       $.ajax({
-          url: 'php/registro.php',
+          url: 'http://localhost:45/Usuarios',
           contentType: "application/json; charset=utf-8",
           async: true,
           type: 'POST',
@@ -378,8 +378,6 @@ function home() {
           dataType: 'json'
         })
         .done(function (data) {
-          console.log(data);
-          console.log(data.status);
           $('#btn-signup').html('<img src="images/ajax-loader.gif" /> &nbsp; registrando...').prop('disabled', true);
           $('input[type=text],input[type=email],input[type=password]').prop('disabled', true);
           
