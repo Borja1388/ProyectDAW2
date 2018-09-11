@@ -4,7 +4,7 @@ require_once 'configBD.php';
 
 
     session_start();
-    $id = $_SESSION['id'];
+    $id = "3";
     // 
 	$sql = "SELECT idUsuario1 FROM chats WHERE idUsuario2 = '$id' UNION Select idUsuario2 FROM chats WHERE idUsuario1 = '$id'";
         

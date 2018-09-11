@@ -4,8 +4,8 @@ require_once 'configBD.php';
 
 
     session_start();
-    $id1 = number_format($_SESSION['id'],0,".","");
-    $id2 = number_format($_GET['id2'],0,".","");
+    $id1 = 3;//number_format($_SESSION['id'],0,".","");
+    $id2 = 5;//number_format($_GET['id2'],0,".","");
     // 
 	$sql = "SELECT idTrade,idProducto1,idProducto2,usuario1Acepta,usuario2Acepta,'1' from trades where idUsuario1 = ? and idUsuario2 = ? and estado = 'Pendiente' union Select idTrade,idProducto2,idProducto1,usuario2Acepta,usuario1Acepta,'2' from trades where idUsuario2 = ? and idUsuario1 = ? and estado = 'Pendiente' ORDER BY 'idTrade' ASC";
         

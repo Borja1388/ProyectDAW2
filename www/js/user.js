@@ -1,5 +1,4 @@
 function newLogin(){
-  console.log("hola");
   var email= document.getElementById("login-email").value;
   var pass= SHA1(document.getElementById("login-password").value);
   var respuesta;
@@ -335,8 +334,10 @@ function tradesRealizados() {
     }
 
     $.ajax({
-      url: "php/misTruekes.php",
-      type: 'POST',
+      url: "http://localhost:45/historial/"+id,
+      contentType: "application/json; charset=utf-8",
+      async: true,
+      type: 'GET',
       dataType: 'json',
       success: function (json) {
         var texto = '<div id="perfil-contenedor-trades" class="contenedor-deseos">' +
@@ -362,23 +363,22 @@ function tradesRealizados() {
 
         json.forEach(n => {
           var texto =
-          
             '<div class="panel-contenedor-historial table-hover">' +
-            '<h5 class="titulo-historial"><strong>'+n.fecha_inicio+' / '+n.fecha_fin+'</strong></h5>'+
+            '<h5 class="titulo-historial"><strong>'+n[6]+' / '+n[7]+'</strong></h5>'+
             '<table class="tabla-trueke">'+
             '<tr class="tabla-trueke fila">'+
-            '<td style="width:10%;"><img src="' + n.imagen1 + '" alt="..." class="img-responsive imagen-pequeña"/>'+
+            '<td style="width:10%;"><img src="' + n[3] + '" alt="..." class="img-responsive imagen-pequeña"/>'+
             '<td style="width:50%;"><b class="titulo-historial">Nombre del producto</b>'+
-            '<h3>' + n.Producto1 + '</h3></td>' +
+            '<h3>' + n[2] + '</h3></td>' +
             '<td style="width:30%;"><b class="titulo-historial">Nombre de usuario</b>'+
-            '<h3>' + n.Nombre1 + '</h3></td>' +
+            '<h3>' + n[0] + '</h3></td>' +
             '</tr>'+
             '<tr class="tabla-trueke fila">'+
-            '<td><img src="' + n.imagen2 + '" alt="..." class="img-responsive imagen-pequeña"/>'+
+            '<td><img src="' + n[5] + '" alt="..." class="img-responsive imagen-pequeña"/>'+
             '<td><b class="titulo-historial">Nombre del producto</b>'+
-            '<h3>' + n.Producto2 + '</h3></td>' +
+            '<h3>' + n[4] + '</h3></td>' +
             '<td><b class="titulo-historial">Nombre de usuario</b>'+
-            '<h3>' + n.Nombre2 + '</h3></td>' +
+            '<h3>' + n[1] + '</h3></td>' +
             '</tr>'+
             '</table>';
           

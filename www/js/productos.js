@@ -6,7 +6,7 @@ function prepararMostrarProductos() {
     php = 'php/productosPalabraClave.php';
     key = $(this)[0].id;
   } else if ($(this).hasClass("card-title") || $(this).parent().is("#conteiner-imagen-deporte-temporada")) {
-    php = 'php/productos.php';
+    php = 'http://localhost:45/BuscarProductos/';
     key = $(this)[0].id;
   } else {
     php = 'php/productosPalabraClave.php';
@@ -103,7 +103,6 @@ function productosDetallados(event) {
     type: 'GET',
     dataType: 'json',
     success: function (json) {
-      console.log(json.imagenes);
       $("#contenedor-mid-interior").html("");
         for (let i = 0; i < json.imagenes.split(" ").length; i++) {
           imagenesCarrusel.push(json.imagenes.split(" ")[i]);
@@ -278,7 +277,6 @@ async function productosDeseados() {
         success: function (json) {
 
           json.forEach(n => {
-            console.log(n);
             listaProductosDeseados.push(n);
           });
         
@@ -473,7 +471,6 @@ function comprobarMisproductos() {
     dataType: "json",
     success: function (json) {
         json.forEach(n => {
-        console.log(n);
           $("big#" + n + ".boton-visible").addClass("boton-color");
        
         });
@@ -613,6 +610,7 @@ function rellenarSubcategorias() {
   });
 
 }
+
 function allowDrop(ev) {
   ev.preventDefault();
  
@@ -645,11 +643,7 @@ function drop(ev) {
     };
     reader.readAsDataURL(files[i]); 
     
-  }
-  console.log(srcCortado);
-  
-  
-    
+  } 
 }
 
 function eliminarFoto(){

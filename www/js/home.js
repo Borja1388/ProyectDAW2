@@ -657,22 +657,7 @@ function gohome() {
   $('<div class="row row-middle" id="contenedor-mid-interior">' +
     '<h1 class="row-middle-title col-lg-12">Deportes de temporada</h1>' +
     '</div>').appendTo("#contenedor-mid");
-
-  subcategoriasImagen.forEach(url => {
-    $("<div class='col-lg-4 col-md-6 mb-4'>" +
-      "<div class='card-body'>" +
-      " <h4 class='card-title producto-titulo-centrar' id=" + url.id + ">" +
-      " <button class='boton-invisible boton-invisible-producto'>" + url.nombre + "</button>" +
-      "</div>" +
-      "<div id='conteiner-imagen-deporte-temporada' class='card h-80'>" +
-      "<button id=" + url.id + " class='boton-invisible'>" +
-      "<img  class='card-img-top' src=" + 'images/middle/' + url.imagen + " alt=''>" +
-      "</button>" +
-      "</div>" +
-      "</div>").appendTo("#contenedor-mid-interior");
-  });
-  $(".card-title").on("click", prepararMostrarProductos);
-  $(".h-80").on("click", "button", prepararMostrarProductos);
+  mostrarMiddleContainer();
 }
 
  function traerSubcategorias(){
@@ -743,9 +728,7 @@ function gohome() {
     error: function (jqXHR, status, error) {
       alert('Disculpe, existió un problema trayendo las categorias. Error: ' + error);
     }
-  });
-
-  
+  }); 
   traerSubcategorias();
   
   setTimeout(function(){

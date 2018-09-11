@@ -65,20 +65,49 @@ function rellenarUsuarios(idTrade) {
 
 
 }
+lista=[];
+nuevoArray = [];
+function eliminarObjetosDuplicados(lista, prop) {
+  
+  var lookup  = {};
+
+  for (var i in lista) {
+    if(lista[i][0]!=id){
+      lookup[lista[i][prop]] = lista[i];
+    }
+      
+  }
+
+  for (i in lookup) {
+      nuevoArray.push(lookup[i]);
+  }
+
+  return nuevoArray;
+}
+
 
 function obtenerUsuarios(usuario, idTrade) {
+
   $.ajax({
-    url: "php/obtenerUsuarios.php",
+    url: "http://localhost:45/Chat/"+id,
     type: 'GET',
     dataType: 'json',
     success: function (json) {
-      $.each(json, (index, data) => {
-        var imagen = data.imagen;
+      for (let i = 0; i < json.length; i++) {
+        lista.push(json[i].splice(3));
+        lista.push(json[i].splice(-3));
+      }
+      
+      eliminarObjetosDuplicados(lista,0);
+      
+      
+     $.each(nuevoArray, (index, data) => {
+        var imagen = data[2];
         var imagenAntes = imagen.substring(0, imagen.lastIndexOf("."));
         var imagenDespues = imagen.substring(imagen.lastIndexOf("."));
         var imagen = imagenAntes + '-35x30' + imagenDespues;
-        var text = "<li value='" + data.id + "' class='lista-usuarios__item'><img src='images/usuarios/" + imagen + "' class='lista-usuarios__imagen' />" +
-          "<span class='lista-usuarios__nombre'>" + data.nombre + "</span><i class='lista-usuarios__icon fa fa-times-circle'></i></li>";
+        var text = "<li value='" + data[0] + "' class='lista-usuarios__item'><img src='images/usuarios/" + imagen + "' class='lista-usuarios__imagen' />" +
+          "<span class='lista-usuarios__nombre'>" + data[1] + "</span><i class='lista-usuarios__icon fa fa-times-circle'></i></li>";
         $("#lista-usuarios").append(text);
         var entrar = false;
         if (usuario == 0) {
@@ -86,7 +115,7 @@ function obtenerUsuarios(usuario, idTrade) {
             entrar = true;
           }
         } else {
-          if (data.id == usuario) {
+          if (data[0] == usuario) {
             entrar = true;
           }
         }
@@ -97,20 +126,23 @@ function obtenerUsuarios(usuario, idTrade) {
           imagenUsuarioPropio = "";
 
           obtenerDatosId().then(response => {
-            rellenarUsuario(imagen, data.nombre);
-            rellenarChat(data.id, data.imagen, response['id'], response['imagen']);
-            rellenarTrade(data.id, idTrade);
+            rellenarUsuario(imagen, data[1]);
+            rellenarChat(data[0], data[2], response['id'], response['imagen']);
+            rellenarTrade(data[0], idTrade);
           });
         }
 
 
-      });
+     });
     },
     error: function (jqXHR, status, error) {
       console.log("Error al traer los usuarios. " + error);
     }
+    
   });
+    
 }
+  
 
 
 function rellenarChat(idUsuario, imagen, idUsuarioPropio, imagenUsuarioPropio) {
@@ -323,19 +355,18 @@ function rellenarTrade(idUsuario, idTrade) {
 
 
   $.ajax({
-    url: "php/obtenerTrades.php",
+    url: "http://localhost:45/Trade/"+ id +"/"+ idUsuario,
     type: 'GET',
-    data: {
-      id2: idUsuario,
-    },
+    contentType: "application/json",
+    async: true,
     dataType: 'json',
     success: function (json) {
       trades = json;
-      
       var contador = 1;
       var mostrar = 0;
       seguir = true;
       $.each(json, (index, data) => {
+        
         if (idTrade != null && seguir) {
           if (data[2] == idTrade) { //// MODIFICADO
             mostrar = index;
@@ -349,7 +380,6 @@ function rellenarTrade(idUsuario, idTrade) {
         $("#trade-header-list").append(text);
         contador++;
       });
-
       mostrarTradeX(mostrar);
 
       $("#trade-header-list").on("click", "li.trade__header__list__item", event => {
@@ -426,14 +456,13 @@ function mostrarTradeX(numero) { // NO se le pasa la id del Trade, se le pasa el
   }
 
   if (trades.length) {
-
+    
     var trade = trades[numero];
-
-    if (trade[0]["id"] == 0) {
+    if (trade[0]== 0) {
       $("#trade-footer button.trade__footer__item--accept").attr("hidden", "hidden");
       $("#trade-footer button.trade__footer__item--cancel").attr("hidden", "hidden");
     } else {
-      if (trade[0]["aceptado"] == 1) {
+      if (trade[0][3] == 1) {
         $("#trade-footer button.trade__footer__item--accept").removeAttr('hidden');
         $("#trade-footer button.trade__footer__item--cancel").attr("hidden", "hidden");
       } else {
@@ -443,27 +472,27 @@ function mostrarTradeX(numero) { // NO se le pasa la id del Trade, se le pasa el
     }
 
     var texto =
-      "<div class='trade__body__item' value='" + trade[1].id + "'>" +
-      "<img class='trade__body__imagen' src='" + trade[1].imagen + "'>" +
-      "<span class='trade__body__nombre'>" + trade[1].nombre + "</span>" +
+      "<div class='trade__body__item' value='" + trade[0] + "'>" +
+      "<img class='trade__body__imagen' src='" + trade[2] + "'>" +
+      "<span class='trade__body__nombre'>" + trade[1] + "</span>" +
       "</div>" +
       "<div class='trade__body__separator'></div>" +
-      "<div class='trade__body__item'  value='" + trade[0].id + "'>" +
-      "<img class='trade__body__imagen' src='" + trade[0].imagen + "'>" +
-      "<span class='trade__body__nombre'>" + trade[0].nombre + "</span>" +
+      "<div class='trade__body__item'  value='" + trade[4]+ "'>" +
+      "<img class='trade__body__imagen' src='" + trade[6] + "'>" +
+      "<span class='trade__body__nombre'>" + trade[5] + "</span>" +
       "</div>";
 
     $("#trade-body").append(texto);
 
-    if (trade[0].aceptado == 0) {
+    if (trade[3] == 0) {
       $("#trade-body div:last-child").append("<div class='trade__body__item--accept'></div>");
     }
 
-    if (trade[1].aceptado == 0) {
+    if (trade[7] == 0) {
       $("#trade-body div:first-child").append("<div class='trade__body__item--accept'></div>");
 
     }
-
+    
     numero += 1;
 
 
@@ -492,13 +521,17 @@ function mostrarTradeX(numero) { // NO se le pasa la id del Trade, se le pasa el
 
 function rellenarInventario() {
   $.ajax({
-    url: "php/misProductos.php",
-    type: 'GET',
+    url: "http://localhost:45/MisProductos",
+    contentType: "application/json",
+    async: true,
+    type: 'POST',
+    data:
+    JSON.stringify(id),
     dataType: 'json',
     success: function (json) {
       $("#modal-propio-lateral-derecho").append("<div id='container-inventario' class='container__inventario'><div id='inventario' class='inventario'></div></div>");
       $.each(json, (index, data) => {
-        $("#inventario").append("<div class='inventario__item' value='" + data.id + "'><img class='inventario__imagen' src='" + data.imagen + "'><span class='inventario__nombre'>" + data.nombre + "</span></div>");
+        $("#inventario").append("<div class='inventario__item' value='" + data[0] + "'><img class='inventario__imagen' src='" + data[3] + "'><span class='inventario__nombre'>" + data[1] + "</span></div>");
         //cambiar en el array
         //cambiar en el trade__body__item
       });
@@ -594,11 +627,15 @@ function cambiarProducto(evento) {
     imagen: srcImagen,
     aceptado: 1
   };
+  
   trades[$("#trade-header-list .trade__header__list__item--selected")[0].value][1].aceptado = 1;
 
   var idTrade = trades[$("#trade-header-list .trade__header__list__item--selected")[0].value][2];
   var posicion = trades[$("#trade-header-list .trade__header__list__item--selected")[0].value][3];
+  console.log(idTrade);
+  console.log(trades);
 
+  //console.log(idProducto);
   $.ajax({
     url: "php/cambiarProductoTrade.php",
     type: 'POST',
@@ -764,12 +801,12 @@ function botonCancelarBorrarTrades() {
 async function obtenerDatosId() {
   return new Promise(function (resolve, reject) {
     $.ajax({
-      url: 'php/obtenerID.php',
+      url: 'http://localhost:45/Usuarios/'+id,
       type: 'GET',
       dataType: 'json',
-      success: function (arrayDatos) {
-        idUsuarioPropio = arrayDatos["id"];
-        imagenUsuarioPropio = arrayDatos["imagen"];
+      success: function (json) {
+        idUsuarioPropio = json.id;
+        imagenUsuarioPropio = json.imagen;
         resolve({
           "id": idUsuarioPropio,
           "imagen": imagenUsuarioPropio
